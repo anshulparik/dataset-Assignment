@@ -2,13 +2,10 @@ import { formatDataSet } from "./formatDataSet.js";
 
 const data = formatDataSet();
 
-
 // 1. Total sales of the store.
 const calculateTotalSales = () => {
   return data.reduce((total, item) => total + item.totalPrice, 0);
 };
-
-
 
 // 2. Month wise sales totals.
 const calculateMonthWiseSales = () => {
@@ -23,8 +20,6 @@ const calculateMonthWiseSales = () => {
   });
   return monthWiseSales;
 };
-
-
 
 // 3. Most popular item (most quantity sold) in each month.
 const findMostPopularItem = () => {
@@ -46,7 +41,6 @@ const findMostPopularItem = () => {
       itemSalesPerMonth[month][item?.sku] + item?.quantity;
   });
 
-
   const mostPopularItem = {};
   for (const month in itemSalesPerMonth) {
     let quantity = 0,
@@ -63,4 +57,39 @@ const findMostPopularItem = () => {
   }
 
   return mostPopularItem;
+};
+
+// 4. Items generating most revenue in each month.
+const findTopRevenueItem = () => {
+  const itemRevenuePerMonth = {};
+
+  data.forEach((item) => {
+    const date = new Date(item?.date);
+    const month = date.toISOString().slice(0, 7);
+
+    if (!itemRevenuePerMonth[month]) {
+      itemRevenuePerMonth[month] = {};
+    }
+
+    if (!itemRevenuePerMonth[month][item?.sku]) {
+      itemRevenuePerMonth[month][item?.sku] = 0;
+    }
+
+    itemRevenuePerMonth[month][item?.sku] =
+      itemRevenuePerMonth[month][item?.sku] + item?.totalPrice;
+  });
+
+  const topRevenueItem = {};
+  for (const month in itemRevenuePerMonth) {
+    let maxRevenue = 0;
+    let topItem = "";
+    for (const item in itemRevenuePerMonth[month]) {
+      if (itemRevenuePerMonth[month][item] > maxRevenue) {
+        maxRevenue = itemRevenuePerMonth[month][item];
+        topItem = item;
+      }
+    }
+    topRevenueItem[month] = topItem;
+  }
+  return topRevenueItem;
 };
