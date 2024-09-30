@@ -9,9 +9,9 @@ export const formatDataSet = () => {
     return {
       date,
       sku,
-      unitPrice,
-      quantity,
-      totalPrice,
+      unitPrice: +unitPrice,
+      quantity: +quantity,
+      totalPrice: +totalPrice,
     };
   });
   
