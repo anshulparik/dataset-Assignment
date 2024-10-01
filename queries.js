@@ -93,3 +93,45 @@ const findTopRevenueItem = () => {
   }
   return topRevenueItem;
 };
+
+// 5. For the most popular item, find the min, max and average number of orders each month.
+const findPopularItemStats = () => {
+  const itemStats = {};
+  const popularItemsPerMonth = findMostPopularItem();
+
+  data.forEach((item) => {
+    const date = new Date(item?.date);
+    const month = date.toISOString().slice(0, 7);
+    const popularItem = popularItemsPerMonth[month];
+
+    if (item.sku === popularItem) {
+      if (!itemStats[month]) itemStats[month] = [];
+      itemStats[month].push(item.quantity);
+    }
+  });
+
+  const result = {};
+  for (const month in itemStats) {
+    const quantities = itemStats[month];
+    const min = Math.min(...quantities);
+    const max = Math.max(...quantities);
+    const avg = quantities.reduce((a, b) => a + b, 0) / quantities.length;
+    result[month] = { min, max, avg: avg.toFixed(2) };
+  }
+  return result;
+};
+
+console.log("Total sales of the store.", calculateTotalSales());
+console.log("Month wise sales totals.", calculateMonthWiseSales());
+console.log(
+  "Most popular item (most quantity sold) in each month.",
+  findMostPopularItem()
+);
+console.log(
+  "Items generating most revenue in each month.",
+  findTopRevenueItem()
+);
+console.log(
+  "For the most popular item, find the min, max and average number of orders each month.",
+  findPopularItemStats()
+);
